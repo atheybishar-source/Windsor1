@@ -1,0 +1,18 @@
+name: Winlator RDP 6 Hours
+on: workflow_dispatch
+jobs:
+  rdp:
+    runs-on: windows-latest
+    timeout-minutes: 360
+    steps:
+      - name: Enable RDP
+        run: |
+          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -value 0
+          Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+          Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "Winlator123!" -Force)
+      - name: Keep Alive 6 Hours
+        run: |
+          Write-Host "USERNAME: runneradmin"
+          Write-Host "PASSWORD: Winlator123!"
+          $end = (Get-Date).AddMinutes(350)
+          while((Get-Date) -lt $end){ Write-Host "Running... $(Get-Date)"; Start-Sleep -Seconds 200 }
